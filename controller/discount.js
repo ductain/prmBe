@@ -9,9 +9,9 @@ const getDiscounts = async (req, res) => {
             .query(
                 "SELECT * FROM DISCOUNT"
             );
-        res.status(200).json({ discounts: discounts.recordset });
+        res.status(200).json(discounts.recordset);
     } catch (error) {
-        res.status(500).json({ error: error });
+        res.status(500).json(error);
     }
 };
 
@@ -26,12 +26,12 @@ const getDiscountById = async (req, res) => {
                 "SELECT * FROM DISCOUNT WHERE DISCOUNT_ID = @discountId"
             );
         if (discount.recordset.length === 0) {
-            res.status(404).json({ error: "Không tìm thấy mã giảm giá" });
+            res.status(404).json("Không tìm thấy mã giảm giá");
         } else {
-            res.status(200).json({ discount: discount.recordset[0] });
+            res.status(200).json(discount.recordset[0]);
         }
     } catch (error) {
-        res.status(500).json({ error: error });
+        res.status(500).json(error);
     }
 };
 

@@ -9,9 +9,9 @@ const getOrders = async (req, res) => {
             .query(
                 "SELECT * FROM ORDERS"
             );
-        res.status(200).json({ orders: orders.recordset });
+        res.status(200).json(orders.recordset);
     } catch (error) {
-        res.status(500).json({ error: error });
+        res.status(500).json(error);
     }
 };
 
@@ -26,12 +26,12 @@ const getOrderDetailsById = async (req, res) => {
                 "SELECT * FROM ORDERDETAILS WHERE ORDER_ID = @orderId"
             );
         if (orderItems.recordset.length === 0) {
-            res.status(404).json({ error: "Không tìm thấy thông tin đơn hàng" });
+            res.status(404).json("Không tìm thấy thông tin đơn hàng");
         } else {
-            res.status(200).json({ orderItems: orderItems.recordset });
+            res.status(200).json(orderItems.recordset);
         }
     } catch (error) {
-        res.status(500).json({ error: error });
+        res.status(500).json(error);
     }
 };
 
@@ -46,12 +46,12 @@ const getOrdersByAccountId = async (req, res) => {
                 "SELECT * FROM ORDERS WHERE ACCOUNT_ID = @accountId"
             );
         if (orders.recordset.length === 0) {
-            res.status(404).json({ error: "Không tìm thấy danh sách đơn hàng" });
+            res.status(404).json("Không tìm thấy danh sách đơn hàng");
         } else {
-            res.status(200).json({ orders: orders.recordset });
+            res.status(200).json(orders.recordset);
         }
     } catch (error) {
-        res.status(500).json({ error: error });
+        res.status(500).json(error);
     }
 };
 
@@ -63,7 +63,7 @@ const createOrder = async (req, res) => {
 
     // Check for missing fields
     if (!accountId || !total || !paymentMethod) {
-        return res.status(400).json({ message: "Vui lòng điển đủ thông tin" });
+        return res.status(400).json("Vui lòng điển đủ thông tin");
     }
 
     try {
@@ -94,9 +94,9 @@ const createOrder = async (req, res) => {
             `);
         }
 
-        res.status(200).json({ message: "Đơn hàng đã được khởi tạo" });
+        res.status(200).json("Đơn hàng đã được khởi tạo");
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json(error);
     }
 };
 

@@ -24,20 +24,20 @@ const register = async (req, res) => {
     !accountPhone ||
     !accountAddress
   ) {
-    return res.status(400).json({ message: "All fields are required." });
+    return res.status(400).json("All fields are required.");
   }
 
   // Check for password length
   if (accountPass.length < 6) {
     return res
       .status(400)
-      .json({ message: "Password must be at least 6 characters long." });
+      .json("Password must be at least 6 characters long.");
   }
 
   try {
     // Check if email already exists
     if (await emailExists(email)) {
-      return res.status(400).json({ message: "Email already in use." });
+      return res.status(400).json("Email already in use.");
     }
 
     // Hash the password
@@ -55,9 +55,9 @@ const register = async (req, res) => {
         "INSERT INTO ACCOUNT (EMAIL, ACCOUNTPASS, ACCOUNT_NAME, ACCOUNT_PHONE, ACCOUNT_ADDRESS) VALUES (@email, @accountPass, @accountName, @accountPhone, @accountAddress)"
       );
 
-    res.status(200).json({ message: "Account registered successfully." });
+    res.status(200).json("Account registered successfully.");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json(error);
   }
 };
 
@@ -68,7 +68,7 @@ const login = async (req, res) => {
   if (!email || !accountPass) {
     return res
       .status(400)
-      .json({ message: "Email and password are required." });
+      .json("Email and password are required.");
   }
 
   try {
@@ -80,7 +80,7 @@ const login = async (req, res) => {
 
     // Check if user exists
     if (user.recordset.length === 0) {
-      return res.status(401).json({ message: "Email not existed." });
+      return res.status(401).json("Email not existed.");
     }
 
     // Compare the hashed password
@@ -90,14 +90,14 @@ const login = async (req, res) => {
     );
 
     if (!isValid) {
-      return res.status(401).json({ message: "Password is incorrect." });
+      return res.status(401).json("Password is incorrect.");
     }
 
     // User authenticated
     const { ACCOUNTPASS, ...userWithoutPassword } = user.recordset[0];
     res
       .status(200)
-      .json({ message: "Login successful.", user: userWithoutPassword });
+      .json(userWithoutPassword);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

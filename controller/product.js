@@ -9,9 +9,9 @@ const getProducts = async (req, res) => {
       .query(
         "SELECT PRODUCT_ID, PRODUCTNAME, ORIGIN, PRICE, PRODUCTDETAILS, PRODUCTMATERIAL, QUANTITY, PRODUCTIMAGE, PR.TYPE_ID, T.TYPENAME, T.RATIO, T.HEIGHT, PR.BRAND_ID, BR.BRANDNAME FROM PRODUCT AS PR JOIN TYPES AS T ON PR.TYPE_ID = T.TYPE_ID JOIN BRAND AS BR ON PR.BRAND_ID = BR.BRAND_ID "
       );
-    res.status(200).json({ products: products.recordset });
+    res.status(200).json(products.recordset);
   } catch (error) {
-    res.status(500).json({ error: error });
+    res.status(500).json(error);
   }
 };
 
