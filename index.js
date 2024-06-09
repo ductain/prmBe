@@ -40,8 +40,10 @@ const options = {
     },
     servers: [
       {
-        // url: "http://localhost:5000",
         url: "https://prm-be.vercel.app/api/v1",
+      },
+      {
+        url: "http://localhost:5000/api/v1",
       },
     ],
   },

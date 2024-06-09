@@ -82,13 +82,13 @@
 
 /**
  * @swagger
- * /products/{id}:
+ * /products/detail:
  *   get:
  *     summary: Get a product by ID
  *     tags: [Products]
  *     parameters:
- *       - in: path
- *         name: id
+ *       - in: query
+ *         name: productId
  *         required: true
  *         description: Product ID
  *         schema:
