@@ -20,6 +20,8 @@ app.use("/api/v1/users", accountRoute);
 app.use("/api/v1/orders", orderRoute);
 app.use("/api/v1/discounts", discountRoute);
 
+const CSS_URL =
+  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.9/swagger-ui.min.css";
 const options = {
   definition: {
     openapi: "3.1.0",
@@ -52,7 +54,7 @@ const specs = swaggerJsdoc(options);
 app.use(
   "/api-docs",
   swaggerUi.serve,
-  swaggerUi.setup(specs, { explorer: true })
+  swaggerUi.setup(specs, { customCssUrl: CSS_URL })
 );
 
 app.listen(port, () => {
