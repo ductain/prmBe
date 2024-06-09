@@ -23,7 +23,7 @@ const getDiscountById = async (req, res) => {
             .request()
             .input("discountId", sql.VarChar, discountId)
             .query(
-                "SELECT * FROM DISCOUNT WHERE DISCOUNT_ID = @discountId"
+                "SELECT * FROM DISCOUNT WHERE DISCOUNTID = @discountId"
             );
         if (discount.recordset.length === 0) {
             res.status(404).json("Không tìm thấy mã giảm giá");
