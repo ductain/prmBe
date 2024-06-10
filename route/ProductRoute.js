@@ -1,4 +1,3 @@
-
 /**
  * @swagger
  * components:
@@ -54,7 +53,7 @@
  *         TYPE_ID: "SD"
  *         BRAND_ID: 1
  *         QUANTITY: 20
-*/
+ */
 
 /**
  * @swagger
@@ -105,10 +104,15 @@
  */
 
 const express = require("express");
-const { getProducts, getProductById } = require("../controller/product");
+const {
+  getProducts,
+  getProductById,
+  getFiveRandomProductsDaily,
+} = require("../controller/product");
 const router = express.Router();
 
 router.get("/", getProducts);
 router.get("/detail", getProductById);
+router.get("/random", getFiveRandomProductsDaily);
 
 module.exports = router;
