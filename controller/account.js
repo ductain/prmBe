@@ -13,48 +13,48 @@ const emailExists = async (email) => {
 };
 
 const register = async (req, res) => {
-  const { email, accountPass, accountName, accountPhone, accountAddress } =
+  const { EMAIL, ACCOUNTPASS, ACCOUNT_NAME, ACCOUNT_PHONE, ACCOUNT_ADDRESS } =
     req.body;
 
   // Check for missing fields
   if (
-    !email ||
-    !accountPass ||
-    !accountName ||
-    !accountPhone ||
-    !accountAddress
+    !EMAIL ||
+    !ACCOUNTPASS ||
+    !ACCOUNT_NAME ||
+    !ACCOUNT_PHONE ||
+    !ACCOUNT_ADDRESS
   ) {
     return res.status(400).json({error: "All fields are required."});
   }
 
   // Check for password length
-  if (accountPass.length < 6) {
+  if (ACCOUNTPASS.length < 6) {
     return res.status(400).json({error: "Password must be at least 6 characters long."});
   }
 
   try {
     // Check if email already exists
-    if (await emailExists(email)) {
+    if (await emailExists(EMAIL)) {
       return res.status(400).json({error: "Email already in use."});
     }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(accountPass, 10);
+    const hashedPassword = await bcrypt.hash(ACCOUNTPASS, 10);
 
     const pool = await sql.connect(config);
     await pool
       .request()
-      .input("email", sql.VarChar, email)
+      .input("email", sql.VarChar, EMAIL)
       .input("accountPass", sql.VarChar, hashedPassword)
-      .input("accountName", sql.NVarChar, accountName)
-      .input("accountPhone", sql.VarChar, accountPhone)
-      .input("accountAddress", sql.NVarChar, accountAddress)
+      .input("accountName", sql.NVarChar, ACCOUNT_NAME)
+      .input("accountPhone", sql.VarChar, ACCOUNT_PHONE)
+      .input("accountAddress", sql.NVarChar, ACCOUNT_ADDRESS)
       .query(
         "INSERT INTO ACCOUNT (EMAIL, ACCOUNTPASS, ACCOUNT_NAME, ACCOUNT_PHONE, ACCOUNT_ADDRESS) VALUES (@email, @accountPass, @accountName, @accountPhone, @accountAddress)"
       );
     const result = await pool
       .request()
-      .input("email", sql.VarChar(50), email)
+      .input("email", sql.VarChar(50), EMAIL)
       .query("SELECT * FROM ACCOUNT WHERE EMAIL = @email");
     res.status(200).json(result.recordset[0]);
   } catch (error) {
@@ -63,10 +63,10 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { email, accountPass } = req.body;
+  const { EMAIL, ACCOUNTPASS } = req.body;
 
   // Check for missing fields
-  if (!email || !accountPass) {
+  if (!EMAIL || !ACCOUNTPASS) {
     return res.status(400).json({error: "Email and password are required."});
   }
 
@@ -74,7 +74,7 @@ const login = async (req, res) => {
     const pool = await sql.connect(config);
     const user = await pool
       .request()
-      .input("email", sql.VarChar, email)
+      .input("email", sql.VarChar, EMAIL)
       .query("SELECT * FROM ACCOUNT WHERE EMAIL = @email");
 
     // Check if user exists
@@ -84,7 +84,7 @@ const login = async (req, res) => {
 
     // Compare the hashed password
     const isValid = await bcrypt.compare(
-      accountPass,
+      ACCOUNTPASS,
       user.recordset[0].ACCOUNTPASS
     );
 
