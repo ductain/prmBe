@@ -13,13 +13,13 @@ const emailExists = async (email) => {
 };
 
 const register = async (req, res) => {
-  const { EMAIL, ACCOUNTPASS, ACCOUNT_NAME, ACCOUNT_PHONE, ACCOUNT_ADDRESS } =
+  const { EMAIL, ACCOUNT_PASS, ACCOUNT_NAME, ACCOUNT_PHONE, ACCOUNT_ADDRESS } =
     req.body;
 
   // Check for missing fields
   if (
     !EMAIL ||
-    !ACCOUNTPASS ||
+    !ACCOUNT_PASS ||
     !ACCOUNT_NAME ||
     !ACCOUNT_PHONE ||
     !ACCOUNT_ADDRESS
@@ -28,7 +28,7 @@ const register = async (req, res) => {
   }
 
   // Check for password length
-  if (ACCOUNTPASS.length < 6) {
+  if (ACCOUNT_PASS.length < 6) {
     return res.status(400).json({error: "Password must be at least 6 characters long."});
   }
 
@@ -39,7 +39,7 @@ const register = async (req, res) => {
     }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(ACCOUNTPASS, 10);
+    const hashedPassword = await bcrypt.hash(ACCOUNT_PASS, 10);
 
     const pool = await sql.connect(config);
     await pool
@@ -50,7 +50,7 @@ const register = async (req, res) => {
       .input("accountPhone", sql.VarChar, ACCOUNT_PHONE)
       .input("accountAddress", sql.NVarChar, ACCOUNT_ADDRESS)
       .query(
-        "INSERT INTO ACCOUNT (EMAIL, ACCOUNTPASS, ACCOUNT_NAME, ACCOUNT_PHONE, ACCOUNT_ADDRESS) VALUES (@email, @accountPass, @accountName, @accountPhone, @accountAddress)"
+        "INSERT INTO ACCOUNT (EMAIL, ACCOUNT_PASS, ACCOUNT_NAME, ACCOUNT_PHONE, ACCOUNT_ADDRESS) VALUES (@email, @accountPass, @accountName, @accountPhone, @accountAddress)"
       );
     const result = await pool
       .request()
@@ -63,10 +63,10 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { EMAIL, ACCOUNTPASS } = req.body;
+  const { EMAIL, ACCOUNT_PASS } = req.body;
 
   // Check for missing fields
-  if (!EMAIL || !ACCOUNTPASS) {
+  if (!EMAIL || !ACCOUNT_PASS) {
     return res.status(400).json({error: "Email and password are required."});
   }
 
@@ -81,11 +81,10 @@ const login = async (req, res) => {
     if (user.recordset.length === 0) {
       return res.status(401).json({error: "Email not existed."});
     }
-
     // Compare the hashed password
     const isValid = await bcrypt.compare(
-      ACCOUNTPASS,
-      user.recordset[0].ACCOUNTPASS
+      ACCOUNT_PASS.toString(),
+      user.recordset[0].ACCOUNT_PASS
     );
 
     if (!isValid) {
@@ -93,8 +92,8 @@ const login = async (req, res) => {
     }
 
     // User authenticated
-    const { ACCOUNTPASS, ...userWithoutPassword } = user.recordset[0];
-    res.status(200).json(userWithoutPassword);
+    // const { accountPass, ...userWithoutPassword } = user.recordset[0];
+    res.status(200).json(user.recordset[0]);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
