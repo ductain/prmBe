@@ -24,18 +24,18 @@ const register = async (req, res) => {
     !accountPhone ||
     !accountAddress
   ) {
-    return res.status(400).json("All fields are required.");
+    return res.status(400).json({error: "All fields are required."});
   }
 
   // Check for password length
   if (accountPass.length < 6) {
-    return res.status(400).json("Password must be at least 6 characters long.");
+    return res.status(400).json({error: "Password must be at least 6 characters long."});
   }
 
   try {
     // Check if email already exists
     if (await emailExists(email)) {
-      return res.status(400).json("Email already in use.");
+      return res.status(400).json({error: "Email already in use."});
     }
 
     // Hash the password
@@ -58,7 +58,7 @@ const register = async (req, res) => {
       .query("SELECT * FROM ACCOUNT WHERE EMAIL = @email");
     res.status(200).json(result.recordset[0]);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -67,7 +67,7 @@ const login = async (req, res) => {
 
   // Check for missing fields
   if (!email || !accountPass) {
-    return res.status(400).json("Email and password are required.");
+    return res.status(400).json({error: "Email and password are required."});
   }
 
   try {
@@ -79,7 +79,7 @@ const login = async (req, res) => {
 
     // Check if user exists
     if (user.recordset.length === 0) {
-      return res.status(401).json("Email not existed.");
+      return res.status(401).json({error: "Email not existed."});
     }
 
     // Compare the hashed password
@@ -89,7 +89,7 @@ const login = async (req, res) => {
     );
 
     if (!isValid) {
-      return res.status(401).json("Password is incorrect.");
+      return res.status(401).json({error: "Password is incorrect."});
     }
 
     // User authenticated
