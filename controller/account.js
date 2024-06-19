@@ -29,9 +29,7 @@ const register = async (req, res) => {
 
   // Check for password length
   if (accountPass.length < 6) {
-    return res
-      .status(400)
-      .json("Password must be at least 6 characters long.");
+    return res.status(400).json("Password must be at least 6 characters long.");
   }
 
   try {
@@ -54,8 +52,11 @@ const register = async (req, res) => {
       .query(
         "INSERT INTO ACCOUNT (EMAIL, ACCOUNTPASS, ACCOUNT_NAME, ACCOUNT_PHONE, ACCOUNT_ADDRESS) VALUES (@email, @accountPass, @accountName, @accountPhone, @accountAddress)"
       );
-
-    res.status(200).json("Account registered successfully.");
+    const result = await pool
+      .request()
+      .input("email", sql.VarChar(50), email)
+      .query("SELECT * FROM ACCOUNT WHERE EMAIL = @email");
+    res.status(200).json(result.recordset[0]);
   } catch (error) {
     res.status(500).json(error);
   }
@@ -66,9 +67,7 @@ const login = async (req, res) => {
 
   // Check for missing fields
   if (!email || !accountPass) {
-    return res
-      .status(400)
-      .json("Email and password are required.");
+    return res.status(400).json("Email and password are required.");
   }
 
   try {
@@ -95,9 +94,7 @@ const login = async (req, res) => {
 
     // User authenticated
     const { ACCOUNTPASS, ...userWithoutPassword } = user.recordset[0];
-    res
-      .status(200)
-      .json(userWithoutPassword);
+    res.status(200).json(userWithoutPassword);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
