@@ -161,6 +161,15 @@
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/NewOrder'
+ *           examples:
+ *             example-1:
+ *               summary: A sample order
+ *               value:
+ *                 cart: '[{"productId": "SD001", "quantity": 2, "unitPrice": 200.0}, {"productId": "HG002", "quantity": 1, "unitPrice": 150.0}]'
+ *                 accountId: 123
+ *                 total: 350.0
+ *                 orderNote: "Ghi gì dô đây cũng được"
+ *                 paymentMethod: "Thanh toán trực tiếp"
  *     responses:
  *       200:
  *         description: Order created successfully
