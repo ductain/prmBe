@@ -57,7 +57,7 @@ const getOrdersByAccountId = async (req, res) => {
 
 const createOrder = async (req, res) => {
     // const { cart, accountId, total, orderNote, paymentMethod } = req.body;
-    const { cart, order } = req.body;
+    const { order, cart } = req.body;
     const { ACCOUNT_ID, TOTALMONEY, ORDER_NOTE, PAYMENTMETHOD } = order;
     const accountId = ACCOUNT_ID;
     const total = TOTALMONEY;
