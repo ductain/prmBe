@@ -56,7 +56,9 @@ const getOrdersByAccountId = async (req, res) => {
 };
 
 const createOrder = async (req, res) => {
-    const { cart, accountId, total, orderNote, paymentMethod } = req.body;
+    // const { cart, accountId, total, orderNote, paymentMethod } = req.body;
+    const { cart, order } = req.body;
+    const { accountId, total, orderNote, paymentMethod } = order;
     const cartArray = JSON.parse(cart); // Assuming cart is an array of objects
     const curDateTime = new Date();
     const orderDate = curDateTime.toISOString(); // ISO 8601 format
