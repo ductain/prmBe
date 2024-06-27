@@ -102,7 +102,7 @@ const createOrder = async (req, res) => {
 
         res.status(200).json({ message: "Đơn hàng đã được khởi tạo" });
     } catch (error) {
-        res.status(500).json(error);
+        res.status(500).json({ error: error.message });
     }
 };
 
