@@ -58,7 +58,11 @@ const getOrdersByAccountId = async (req, res) => {
 const createOrder = async (req, res) => {
     // const { cart, accountId, total, orderNote, paymentMethod } = req.body;
     const { cart, order } = req.body;
-    const { accountId, total, orderNote, paymentMethod } = order;
+    const { ACCOUNT_ID, TOTALMONEY, ORDER_NOTE, PAYMENTMETHOD } = order;
+    const accountId = ACCOUNT_ID;
+    const total = TOTALMONEY;
+    const orderNote = ORDER_NOTE;
+    const paymentMethod = PAYMENTMETHOD;
     const cartArray = JSON.parse(cart); // Assuming cart is an array of objects
     const curDateTime = new Date();
     const orderDate = curDateTime.toISOString(); // ISO 8601 format
@@ -87,9 +91,9 @@ const createOrder = async (req, res) => {
         for (const item of cartArray) {
             const request = pool.request(); // Create a new request object
             request.input("order_id", sql.Int, newOrderId);
-            request.input("product_id", sql.NVarChar, item.productId);
+            request.input("product_id", sql.NVarChar, item.productID);
             request.input("quantity", sql.Int, item.quantity);
-            request.input("unit_price", sql.Float, item.unitPrice);
+            request.input("unit_price", sql.Float, item.price);
             await request.query(`
                 INSERT INTO ORDERDETAILS (ORDER_ID, PRODUCT_ID, QUANTITY, UNITPRICE)
                 VALUES (@order_id, @product_id, @quantity, @unit_price);
