@@ -100,7 +100,7 @@ const createOrder = async (req, res) => {
             `);
         }
 
-        res.status(200).json("Đơn hàng đã được khởi tạo");
+        res.status(200).json({ message: "Đơn hàng đã được khởi tạo" });
     } catch (error) {
         res.status(500).json(error);
     }
