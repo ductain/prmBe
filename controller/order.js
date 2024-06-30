@@ -63,7 +63,8 @@ const createOrder = async (req, res) => {
     const total = TOTALMONEY;
     const orderNote = ORDER_NOTE;
     const paymentMethod = PAYMENTMETHOD;
-    const cartArray = JSON.parse(cart); // Assuming cart is an array of objects
+    // const cartArray = JSON.parse(cart); // Assuming cart is an array of objects
+    const cartArray = cart; // Assuming cart is an array of objects
     const curDateTime = new Date();
     const orderDate = curDateTime.toISOString(); // ISO 8601 format
 
