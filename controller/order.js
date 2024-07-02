@@ -23,7 +23,7 @@ const getOrderInfoById = async (req, res) => {
         .request()
         .input("orderId", sql.Int, orderId)
         .query(
-          "SELECT * FROM ORDERS WHERE ORDER_ID = @orderId "
+          "SELECT ORDER_ID, ORDER_DATE, ACCOUNT_ID, TOTALMONEY, ORDER_NOTE, PAYMENTMETHOD FROM ORDERS WHERE ORDER_ID = @orderId "
         );
       if (order.recordset.length === 0) {
         res.status(404).json("Không tìm thấy thông tin đơn hàng");
@@ -43,7 +43,7 @@ const getOrderDetailsById = async (req, res) => {
             .request()
             .input("orderId", sql.Int, orderId)
             .query(
-                "SELECT * FROM ORDERDETAILS WHERE ORDER_ID = @orderId"
+                "SELECT od.ORDER_ID, od.PRODUCT_ID, p.PRODUCTNAME, p.PRODUCTIMAGE, od.QUANTITY, od.UNITPRICE  FROM ORDERDETAILS od join PRODUCT p on od.PRODUCT_ID = p.PRODUCT_ID WHERE ORDER_ID = @orderId"
             );
         if (orderItems.recordset.length === 0) {
             res.status(404).json("Không tìm thấy thông tin đơn hàng");

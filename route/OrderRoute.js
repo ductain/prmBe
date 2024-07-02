@@ -86,35 +86,87 @@
 
 /**
  * @swagger
- * /orders/{orderId}/details:
+ * /order/info:
  *   get:
- *     summary: Get order details by ID
- *     tags: [Orders]
+ *     summary: Retrieve order information by order ID
+ *     description: Fetches details of an order including order date, account ID, total money, order note, and payment method.
  *     parameters:
- *       - in: path
+ *       - in: query
  *         name: orderId
- *         required: true
- *         description: ID of the order
  *         schema:
  *           type: integer
+ *         required: true
+ *         description: The ID of the order to retrieve
  *     responses:
  *       200:
- *         description: Returns the order details
+ *         description: Successfully retrieved order information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 ORDER_ID:
+ *                   type: integer
+ *                 ORDER_DATE:
+ *                   type: string
+ *                   format: date-time
+ *                 ACCOUNT_ID:
+ *                   type: integer
+ *                 TOTALMONEY:
+ *                   type: number
+ *                   format: float
+ *                 ORDER_NOTE:
+ *                   type: string
+ *                 PAYMENTMETHOD:
+ *                   type: string
+ *       404:
+ *         description: Order not found
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /order/details:
+ *   get:
+ *     summary: Retrieve order details by order ID
+ *     description: Fetches details of order items including product name, product image, quantity, and unit price.
+ *     parameters:
+ *       - in: query
+ *         name: orderId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The ID of the order to retrieve details for
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved order details
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/OrderDetails'
+ *                 type: object
+ *                 properties:
+ *                   ORDER_ID:
+ *                     type: integer
+ *                   PRODUCT_ID:
+ *                     type: integer
+ *                   PRODUCTNAME:
+ *                     type: string
+ *                   PRODUCTIMAGE:
+ *                     type: string
+ *                   QUANTITY:
+ *                     type: integer
+ *                   UNITPRICE:
+ *                     type: number
+ *                     format: float
  *       404:
- *         description: Order not found
- *         content:
- *           text/plain:
- *             schema:
- *               type: string
+ *         description: Order details not found
  *       500:
  *         description: Internal server error
  */
+
 
 
 /**
