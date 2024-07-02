@@ -15,8 +15,28 @@ const getOrders = async (req, res) => {
     }
 };
 
+const getOrderInfoById = async (req, res) => {
+    const orderId = req.query.orderId;
+    try {
+      const pool = await sql.connect(config);
+      const order = await pool
+        .request()
+        .input("orderId", sql.Int, orderId)
+        .query(
+          "SELECT * FROM ORDERS WHERE ORDER_ID = @orderId "
+        );
+      if (order.recordset.length === 0) {
+        res.status(404).json("Không tìm thấy thông tin đơn hàng");
+      } else {
+        res.status(200).json(order.recordset[0]);
+      }
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  };
+
 const getOrderDetailsById = async (req, res) => {
-    const orderId = req.params.orderId;
+    const orderId = req.query.orderId;
     try {
         const pool = await sql.connect(config);
         const orderItems = await pool
@@ -110,6 +130,7 @@ const createOrder = async (req, res) => {
 
 module.exports = {
     getOrders: getOrders,
+    getOrderInfoById: getOrderInfoById,
     getOrderDetailsById: getOrderDetailsById,
     getOrdersByAccountId: getOrdersByAccountId,
     createOrder: createOrder,

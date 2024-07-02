@@ -187,13 +187,14 @@
  *         description: Internal server error
  */
 const express = require("express");
-const { getOrderDetailsById, getOrdersByAccountId, getOrders, createOrder } = require("../controller/order");
+const { getOrderDetailsById, getOrdersByAccountId, getOrders, createOrder, getOrderInfoById } = require("../controller/order");
 
 const router = express.Router();
 
 router.get("/", getOrders);
 router.post("/", createOrder);
 router.get("/account", getOrdersByAccountId);
-router.get("/:orderId", getOrderDetailsById);
+router.get("/info", getOrderInfoById);
+router.get("/details", getOrderDetailsById);
 
 module.exports = router;
