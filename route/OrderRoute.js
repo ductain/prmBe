@@ -89,6 +89,7 @@
  * /order/info:
  *   get:
  *     summary: Retrieve order information by order ID
+ *     tags: [Orders]
  *     description: Fetches details of an order including order date, account ID, total money, order note, and payment method.
  *     parameters:
  *       - in: query
@@ -130,6 +131,7 @@
  * /order/details:
  *   get:
  *     summary: Retrieve order details by order ID
+ *     tags: [Orders]
  *     description: Fetches details of order items including product name, product image, quantity, and unit price.
  *     parameters:
  *       - in: query
