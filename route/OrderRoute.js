@@ -86,7 +86,7 @@
 
 /**
  * @swagger
- * /order/info:
+ * /orders/info:
  *   get:
  *     summary: Retrieve order information by order ID
  *     tags: [Orders]
@@ -128,7 +128,7 @@
 
 /**
  * @swagger
- * /order/details:
+ * /orders/details:
  *   get:
  *     summary: Retrieve order details by order ID
  *     tags: [Orders]
