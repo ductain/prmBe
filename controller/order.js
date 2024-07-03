@@ -23,7 +23,7 @@ const getOrderInfoById = async (req, res) => {
         .request()
         .input("orderId", sql.Int, orderId)
         .query(
-          "SELECT ORDER_ID, ORDER_DATE, ACCOUNT_ID, TOTALMONEY, ORDER_NOTE, PAYMENTMETHOD FROM ORDERS WHERE ORDER_ID = @orderId "
+          "SELECT o.ORDER_ID, o.ORDER_DATE, o.ACCOUNT_ID, a.ACCOUNT_NAME, o.TOTALMONEY, o.ORDER_NOTE, o.PAYMENTMETHOD FROM ORDERS o join ACCOUNT a on o.ACCOUNT_ID = a.ACCOUNT_ID WHERE ORDER_ID = @orderId "
         );
       if (order.recordset.length === 0) {
         res.status(404).json("Không tìm thấy thông tin đơn hàng");
