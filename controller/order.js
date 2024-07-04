@@ -18,22 +18,22 @@ const getOrders = async (req, res) => {
 const getOrderInfoById = async (req, res) => {
     const orderId = req.query.orderId;
     try {
-      const pool = await sql.connect(config);
-      const order = await pool
-        .request()
-        .input("orderId", sql.Int, orderId)
-        .query(
-          "SELECT o.ORDER_ID, o.ORDER_DATE, o.ACCOUNT_ID, a.ACCOUNT_NAME, o.TOTALMONEY, o.ORDER_NOTE, o.PAYMENTMETHOD FROM ORDERS o join ACCOUNT a on o.ACCOUNT_ID = a.ACCOUNT_ID WHERE ORDER_ID = @orderId "
-        );
-      if (order.recordset.length === 0) {
-        res.status(404).json("Không tìm thấy thông tin đơn hàng");
-      } else {
-        res.status(200).json(order.recordset[0]);
-      }
+        const pool = await sql.connect(config);
+        const order = await pool
+            .request()
+            .input("orderId", sql.Int, orderId)
+            .query(
+                "SELECT o.ORDER_ID, o.ORDER_DATE, o.ACCOUNT_ID, a.ACCOUNT_NAME, o.TOTALMONEY, o.ORDER_NOTE, o.PAYMENTMETHOD FROM ORDERS o join ACCOUNT a on o.ACCOUNT_ID = a.ACCOUNT_ID WHERE ORDER_ID = @orderId "
+            );
+        if (order.recordset.length === 0) {
+            res.status(404).json("Không tìm thấy thông tin đơn hàng");
+        } else {
+            res.status(200).json(order.recordset[0]);
+        }
     } catch (error) {
-      res.status(500).json(error);
+        res.status(500).json(error);
     }
-  };
+};
 
 const getOrderDetailsById = async (req, res) => {
     const orderId = req.query.orderId;
@@ -108,20 +108,32 @@ const createOrder = async (req, res) => {
 
         const newOrderId = insertedOrderResult.recordset[0].NewOrderID;
 
-        // Insert orderDetails for each item in the cart
-        for (const item of cartArray) {
-            const request = pool.request(); // Create a new request object
-            request.input("order_id", sql.Int, newOrderId);
-            request.input("product_id", sql.NVarChar, item.productID);
-            request.input("quantity", sql.Int, item.quantity);
-            request.input("unit_price", sql.Float, item.price);
-            await request.query(`
-                INSERT INTO ORDERDETAILS (ORDER_ID, PRODUCT_ID, QUANTITY, UNITPRICE)
-                VALUES (@order_id, @product_id, @quantity, @unit_price);
-            `);
-        }
+        // Insert orderDetails for each item in the cart, and reduce the quantity of the overall products
+        const transaction = new sql.Transaction(pool);
 
-        res.status(200).json({ message: "Đơn hàng đã được khởi tạo", orderId: newOrderId });
+        try {
+            await transaction.begin();
+
+            for (const item of cartArray) {
+                const request = transaction.request();
+                request.input("order_id", sql.Int, newOrderId);
+                request.input("product_id", sql.NVarChar, item.productID);
+                request.input("quantity", sql.Int, item.quantity);
+                request.input("unit_price", sql.Float, item.price);
+
+                // Insert into ORDERDETAILS
+                await request.query("INSERT INTO ORDERDETAILS (ORDER_ID, PRODUCT_ID, QUANTITY, UNITPRICE) VALUES (@order_id, @product_id, @quantity, @unit_price);");
+
+                // Reduce the quantity in the PRODUCT table
+                await request.query("UPDATE PRODUCT SET QUANTITY = QUANTITY - @quantity WHERE PRODUCT_ID = @product_id;");
+            }
+
+            await transaction.commit();
+            res.status(200).json({ message: "Đơn hàng đã được khởi tạo", orderId: newOrderId });
+        } catch (err) {
+            await transaction.rollback();
+            res.status(500).json("Transaction failed: ", err);
+        }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
